@@ -1,0 +1,139 @@
+{% extends "portfolio/base.html" %}
+{% load static %}
+
+{% block title %}{{ site_settings.site_name }} — {{ site_settings.teacher_full_name }}{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+  <div class="container hero-inner">
+    <div>
+      <span class="hero-eyebrow">Сайт-портфолио педагога</span>
+      <h1>{{ site_settings.hero_title }}</h1>
+      <p class="lead">{{ site_settings.hero_subtitle }}</p>
+      <div class="hero-actions">
+        <a href="{% url 'portfolio:about' %}" class="btn btn--light">Узнать обо мне</a>
+        <a href="{% url 'portfolio:portfolio_home' %}" class="btn btn--outline" style="border-color:#fff;color:#fff;">Смотреть портфолио</a>
+      </div>
+      {% if site_settings.hero_quote %}
+      <div class="hero-quote">{{ site_settings.hero_quote }}</div>
+      {% endif %}
+    </div>
+    <div class="hero-photo-frame">
+      {% if site_settings.hero_photo %}
+        <img src="{{ site_settings.hero_photo.url }}" alt="{{ site_settings.teacher_full_name }}">
+      {% else %}
+        <div class="hero-photo-fallback">{{ site_settings.logo_initials|default:"А" }}</div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-heading">
+      <span class="eyebrow">Обо мне</span>
+      <h2>Немного о моей работе</h2>
+      <p>{{ site_settings.about_preview }}</p>
+    </div>
+    <div style="text-align:center;">
+      <a href="{% url 'portfolio:about' %}" class="btn btn--primary">Читать подробнее</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-heading">
+      <span class="eyebrow">Портфолио</span>
+      <h2>Разделы портфолио</h2>
+      <p>Достижения, методические разработки и фотографии с уроков и мероприятий</p>
+    </div>
+    <div class="hub-grid">
+      <a href="{% url 'portfolio:teacher_achievements' %}" class="hub-tile">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15a6 6 0 100-12 6 6 0 000 12z"/><path d="M8.5 13.5L7 22l5-3 5 3-1.5-8.5"/></svg>
+        </div>
+        <h3>Мои достижения</h3>
+        <p>Грамоты, дипломы и сертификаты</p>
+        <span class="go-link">Смотреть &rarr;</span>
+      </a>
+      <a href="{% url 'portfolio:student_achievements' %}" class="hub-tile">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 10l-10-6L2 10l10 6 10-6z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>
+        </div>
+        <h3>Достижения учащихся</h3>
+        <p>Успехи и награды моих учеников</p>
+        <span class="go-link">Смотреть &rarr;</span>
+      </a>
+      <a href="{% url 'portfolio:methodical' %}" class="hub-tile">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        </div>
+        <h3>Методическая копилка</h3>
+        <p>Разработки уроков и мероприятий</p>
+        <span class="go-link">Смотреть &rarr;</span>
+      </a>
+      <a href="{% url 'portfolio:gallery' %}" class="hub-tile">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        </div>
+        <h3>Фотогалерея</h3>
+        <p>Фотографии с уроков и мероприятий</p>
+        <span class="go-link">Смотреть &rarr;</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+{% if teacher_achievements %}
+<section class="section">
+  <div class="container">
+    <div class="section-heading">
+      <span class="eyebrow">Достижения</span>
+      <h2>Последние награды</h2>
+    </div>
+    <div class="card-grid">
+      {% for item in teacher_achievements %}
+      <div class="card">
+        <div class="card-media">
+          <img src="{{ item.image.url }}" alt="{{ item.title }}">
+        </div>
+        <div class="card-body">
+          {% if item.year %}<div class="card-meta"><span class="badge">{{ item.year }}</span></div>{% endif %}
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.description|truncatewords:18 }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div style="text-align:center; margin-top:36px;">
+      <a href="{% url 'portfolio:teacher_achievements' %}" class="btn btn--outline">Все достижения</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if gallery_preview %}
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-heading">
+      <span class="eyebrow">Фотогалерея</span>
+      <h2>Моменты из школьной жизни</h2>
+    </div>
+    <div class="gallery-grid">
+      {% for photo in gallery_preview %}
+      <div class="gallery-item">
+        <img src="{{ photo.image.url }}" alt="{{ photo.caption }}">
+        {% if photo.caption %}<div class="gallery-caption">{{ photo.caption }}</div>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    <div style="text-align:center; margin-top:36px;">
+      <a href="{% url 'portfolio:gallery' %}" class="btn btn--primary">Вся галерея</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}

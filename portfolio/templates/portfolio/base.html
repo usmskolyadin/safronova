@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ site_settings.site_name }}{% endblock %}</title>
+  <meta name="description" content="{{ site_settings.hero_subtitle }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="{% url 'portfolio:home' %}" class="brand">
+        <span class="brand-mark">{{ site_settings.logo_initials|default:"А" }}</span>
+        <span class="brand-text">
+          <span class="name">{{ site_settings.teacher_full_name }}</span>
+          <span class="role">{{ site_settings.teacher_position }}</span>
+        </span>
+      </a>
+
+      <button class="nav-toggle" aria-label="Открыть меню">&#9776;</button>
+
+      <nav class="main-nav">
+        <a href="{% url 'portfolio:home' %}" class="{% if request.resolver_match.url_name == 'home' %}is-active{% endif %}">Главная</a>
+        <a href="{% url 'portfolio:about' %}" class="{% if request.resolver_match.url_name == 'about' %}is-active{% endif %}">Обо мне</a>
+        <div class="nav-dropdown">
+          <a href="{% url 'portfolio:portfolio_home' %}" class="{% if '/portfolio/' in request.path %}is-active{% endif %}">Портфолио &#9662;</a>
+          <div class="nav-dropdown-panel">
+            <a href="{% url 'portfolio:portfolio_home' %}">Обзор портфолио</a>
+            <a href="{% url 'portfolio:teacher_achievements' %}">Мои достижения</a>
+            <a href="{% url 'portfolio:student_achievements' %}">Достижения учащихся</a>
+            <a href="{% url 'portfolio:methodical' %}">Методическая копилка</a>
+            <a href="{% url 'portfolio:gallery' %}">Фотогалерея</a>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <h4>{{ site_settings.teacher_full_name }}</h4>
+          <p>{{ site_settings.footer_text }}</p>
+          {% if site_settings.vk_url or site_settings.telegram_url %}
+          <div class="footer-social">
+            {% if site_settings.vk_url %}<a href="{{ site_settings.vk_url }}" target="_blank" rel="noopener">VK</a>{% endif %}
+            {% if site_settings.telegram_url %}<a href="{{ site_settings.telegram_url }}" target="_blank" rel="noopener">TG</a>{% endif %}
+          </div>
+          {% endif %}
+        </div>
+        <div>
+          <h4>Разделы</h4>
+          <ul>
+            <li><a href="{% url 'portfolio:home' %}">Главная</a></li>
+            <li><a href="{% url 'portfolio:about' %}">Обо мне</a></li>
+            <li><a href="{% url 'portfolio:portfolio_home' %}">Портфолио</a></li>
+            <li><a href="{% url 'portfolio:gallery' %}">Фотогалерея</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Контакты</h4>
+          <ul>
+            {% if site_settings.email %}<li>{{ site_settings.email }}</li>{% endif %}
+            {% if site_settings.phone %}<li>{{ site_settings.phone }}</li>{% endif %}
+            {% if site_settings.address %}<li>{{ site_settings.address }}</li>{% endif %}
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        &copy; {% now "Y" %} {{ site_settings.teacher_full_name }}. Все материалы использованы в некоммерческих, образовательных целях.
+      </div>
+    </div>
+  </footer>
+
+  <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

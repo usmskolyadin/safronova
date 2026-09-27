@@ -1,0 +1,44 @@
+{% extends "portfolio/base.html" %}
+
+{% block title %}Достижения учащихся — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumbs"><a href="{% url 'portfolio:home' %}">Главная</a> / <a href="{% url 'portfolio:portfolio_home' %}">Портфолио</a> / Достижения учащихся</div>
+    <span class="eyebrow">Портфолио</span>
+    <h1>Достижения учащихся</h1>
+    <p>Успехи моих учеников на олимпиадах, конкурсах и творческих конференциях.</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    {% if achievements %}
+      <div class="card-grid">
+        {% for item in achievements %}
+        <div class="card">
+          <div class="card-media">
+            <img src="{{ item.image.url }}" alt="{{ item.title }}">
+          </div>
+          <div class="card-body">
+            <div class="card-meta">
+              {% if item.year %}<span class="badge">{{ item.year }}</span>{% endif %}
+              {% if item.student_name %}<span class="badge">{{ item.student_name }}</span>{% endif %}
+            </div>
+            <h3>{{ item.title }}</h3>
+            {% if item.description %}<p>{{ item.description }}</p>{% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% include "portfolio/_pagination.html" %}
+    {% else %}
+      <div class="empty-state">
+        <div class="icon">&#127942;</div>
+        <p>Материалы этого раздела скоро появятся. Добавить их можно через административную панель.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

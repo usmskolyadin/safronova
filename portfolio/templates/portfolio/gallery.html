@@ -1,0 +1,43 @@
+{% extends "portfolio/base.html" %}
+
+{% block title %}Фотогалерея — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumbs"><a href="{% url 'portfolio:home' %}">Главная</a> / <a href="{% url 'portfolio:portfolio_home' %}">Портфолио</a> / Фотогалерея</div>
+    <span class="eyebrow">Портфолио</span>
+    <h1>Фотогалерея</h1>
+    <p>Фотографии с уроков, праздников и школьных мероприятий.</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    {% if photos %}
+      <div class="gallery-grid">
+        {% for photo in photos %}
+        <div class="gallery-item" data-lightbox="{{ photo.image.url }}" data-caption="{{ photo.caption }}">
+          <img src="{{ photo.image.url }}" alt="{{ photo.caption }}" loading="lazy">
+          {% if photo.caption %}<div class="gallery-caption">{{ photo.caption }}</div>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% include "portfolio/_pagination.html" %}
+    {% else %}
+      <div class="empty-state">
+        <div class="icon">&#128247;</div>
+        <p>Фотографии скоро появятся. Добавить их можно через административную панель.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<div class="lightbox">
+  <button class="lightbox-close" aria-label="Закрыть">&times;</button>
+  <div>
+    <img src="" alt="">
+    <div class="lightbox-caption"></div>
+  </div>
+</div>
+{% endblock %}

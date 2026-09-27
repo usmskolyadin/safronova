@@ -1,0 +1,60 @@
+{% extends "portfolio/base.html" %}
+
+{% block title %}Портфолио — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumbs"><a href="{% url 'portfolio:home' %}">Главная</a> / Портфолио</div>
+    <span class="eyebrow">Портфолио</span>
+    <h1>{{ portfolio_page.title }}</h1>
+    <p>{{ portfolio_page.intro }}</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="hub-grid">
+      <a href="{% url 'portfolio:teacher_achievements' %}" class="hub-tile">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15a6 6 0 100-12 6 6 0 000 12z"/><path d="M8.5 13.5L7 22l5-3 5 3-1.5-8.5"/></svg>
+        </div>
+        <h3>Мои достижения</h3>
+        <p>Грамоты, дипломы, сертификаты и награды за педагогическую деятельность.</p>
+        <div class="count">{{ teacher_achievements_count }} материал(ов)</div>
+        <div style="margin-top:14px;"><span class="go-link">Открыть раздел &rarr;</span></div>
+      </a>
+
+      <a href="{% url 'portfolio:student_achievements' %}" class="hub-tile">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 10l-10-6L2 10l10 6 10-6z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>
+        </div>
+        <h3>Достижения учащихся</h3>
+        <p>Успехи учеников на олимпиадах, конкурсах и творческих конференциях.</p>
+        <div class="count">{{ student_achievements_count }} материал(ов)</div>
+        <div style="margin-top:14px;"><span class="go-link">Открыть раздел &rarr;</span></div>
+      </a>
+
+      <a href="{% url 'portfolio:methodical' %}" class="hub-tile">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        </div>
+        <h3>Методическая копилка</h3>
+        <p>Разработки уроков, внеклассных мероприятий, презентации и статьи.</p>
+        <div class="count">{{ methodical_count }} материал(ов)</div>
+        <div style="margin-top:14px;"><span class="go-link">Открыть раздел &rarr;</span></div>
+      </a>
+
+      <a href="{% url 'portfolio:gallery' %}" class="hub-tile">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        </div>
+        <h3>Фотогалерея</h3>
+        <p>Фотографии с уроков, праздников и школьных мероприятий.</p>
+        <div class="count">{{ gallery_count }} фото</div>
+        <div style="margin-top:14px;"><span class="go-link">Открыть раздел &rarr;</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}

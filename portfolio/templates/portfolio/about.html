@@ -1,0 +1,72 @@
+{% extends "portfolio/base.html" %}
+
+{% block title %}Обо мне — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumbs"><a href="{% url 'portfolio:home' %}">Главная</a> / Обо мне</div>
+    <span class="eyebrow">Знакомство</span>
+    <h1>Обо мне</h1>
+    <p>{{ site_settings.teacher_position }}</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container about-layout">
+    <div>
+      {% if about.photo %}
+        <div class="about-photo">
+          <img src="{{ about.photo.url }}" alt="{{ site_settings.teacher_full_name }}">
+        </div>
+      {% else %}
+        <div class="about-photo">
+          <div class="about-photo-fallback">Фото не загружено</div>
+        </div>
+      {% endif %}
+    </div>
+
+    <div>
+      <div class="about-block">
+        <h2>Здравствуйте!</h2>
+        <p>{{ about.intro }}</p>
+      </div>
+
+      {% if about.education %}
+      <div class="about-block">
+        <h2>Образование</h2>
+        <p>{{ about.education }}</p>
+      </div>
+      {% endif %}
+
+      {% if about.experience %}
+      <div class="about-block">
+        <h2>Опыт работы</h2>
+        <p>{{ about.experience }}</p>
+      </div>
+      {% endif %}
+
+      {% if about.philosophy %}
+      <div class="about-block">
+        <h2>Педагогическое кредо</h2>
+        <p>{{ about.philosophy }}</p>
+      </div>
+      {% endif %}
+
+      {% if about.achievements_summary %}
+      <div class="about-block">
+        <h2>Награды и достижения</h2>
+        <p>{{ about.achievements_summary }}</p>
+      </div>
+      {% endif %}
+
+      {% if about.hobbies %}
+      <div class="about-block">
+        <h2>Увлечения</h2>
+        <p>{{ about.hobbies }}</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}
