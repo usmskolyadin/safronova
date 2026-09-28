@@ -70,13 +70,17 @@ pip install pysqlite3-binary
 
 Код уже готов к обоим последствиям этой замены:
 `config/settings.py` сам подхватывает более новую SQLite, если пакет
-установлен, а `config/sqlite_backend.py` обходит то, что `pysqlite3` не
+установлен, а `config/sqlite_compat.py` обходит то, что `pysqlite3` не
 реализует `getlimit()/setlimit()` (иначе следующим шагом вылезла бы
 `AttributeError: 'pysqlite3.dbapi2.Connection' object has no attribute
-'getlimit'` прямо во время `migrate`).
+'getlimit'` прямо во время `migrate` — причём сразу в нескольких местах
+Django, поэтому чинится не точечным патчем, а подменой класса
+`Connection` через `factory=`).
 
 После установки просто повторите `migrate` — ничего руками
-патчить не нужно.
+патчить не нужно. Локально это прогнано end-to-end (полный `migrate` со
+всеми миграциями проекта) через имитацию такого окружения — должно
+сработать и у вас.
 
 ## Шаг 5. Настроить `site.wsgi`
 

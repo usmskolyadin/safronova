@@ -17,9 +17,9 @@ from pathlib import Path
 # Some hosts (e.g. Sprinthost) link Python's sqlite3 against a system
 # SQLite too old for Django. If `pysqlite3-binary` is installed (see
 # DEPLOY_SPRINTHOST.md), swap it in transparently; elsewhere this is a
-# no-op and the stdlib sqlite3 is used as usual. The 'config.sqlite_backend'
-# ENGINE below (used only in this case) works around pysqlite3 not
-# implementing Connection.getlimit()/setlimit().
+# no-op and the stdlib sqlite3 is used as usual. The 'factory' passed to
+# DATABASES below (only in this case) works around pysqlite3 not
+# implementing Connection.getlimit()/setlimit() — see sqlite_compat.py.
 USING_PYSQLITE3 = False
 try:
     __import__('pysqlite3')
@@ -106,10 +106,16 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'config.sqlite_backend' if USING_PYSQLITE3 else 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'OPTIONS': {},
     }
 }
+
+if USING_PYSQLITE3:
+    from config.sqlite_compat import CompatConnection
+
+    DATABASES['default']['OPTIONS']['factory'] = CompatConnection
 
 
 # Password validation
