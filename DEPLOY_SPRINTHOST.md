@@ -30,8 +30,13 @@ git push -u origin main
 
 ## Шаг 3. Зайти по SSH и создать виртуальное окружение
 
+Адрес сервера для подключения смотрите в панели: **«Сайты» → «Подключение
+к сервисам»**, поле «Сервер» (вид `serverN.sprinthost.ru`) — не собирайте
+его сами из IP-адреса, эти два варианта не совмещаются. Можно также
+подключиться напрямую по IP-адресу из **«Сайты» → «IP-адреса»**.
+
 ```bash
-ssh <логин>@<ваш-сервер>.sprinthost.ru
+ssh <логин>@<адрес-сервера-из-панели>
 pip install virtualenv --user
 virtualenv --system-site-packages python
 source ~/python/bin/activate
@@ -54,21 +59,18 @@ pip install -r requirements.txt
 
 ### Если Django ругается на версию SQLite
 
-На некоторых тарифах системный `sqlite3` старее, чем требует Django 6.1.
-Если при `migrate` увидите ошибку про версию SQLite:
+На некоторых тарифах системный `sqlite3` старее, чем требует Django 6.1 —
+при `migrate` в этом случае появится ошибка вида
+`NotSupportedError: deterministic=True requires SQLite 3.8.3 or higher`.
+Лечится одной командой, код уже готов к этому (`config/settings.py`
+сам подхватывает более новую SQLite, если пакет установлен):
 
 ```bash
 pip install pysqlite3-binary
 ```
 
-и добавьте в самое начало `manage.py` и `config/wsgi.py` (после
-`import os`, перед остальным кодом):
-
-```python
-__import__("pysqlite3")
-import sys
-sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
-```
+После установки просто повторите `migrate` — ничего руками
+патчить не нужно.
 
 ## Шаг 5. Настроить `site.wsgi`
 

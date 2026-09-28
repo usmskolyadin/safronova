@@ -11,7 +11,18 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
+
+# Some hosts (e.g. Sprinthost) link Python's sqlite3 against a system
+# SQLite too old for Django. If `pysqlite3-binary` is installed (see
+# DEPLOY_SPRINTHOST.md), swap it in transparently; elsewhere this is a
+# no-op and the stdlib sqlite3 is used as usual.
+try:
+    __import__('pysqlite3')
+    sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+except ImportError:
+    pass
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
