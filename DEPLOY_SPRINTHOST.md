@@ -62,12 +62,18 @@ pip install -r requirements.txt
 На некоторых тарифах системный `sqlite3` старее, чем требует Django 6.1 —
 при `migrate` в этом случае появится ошибка вида
 `NotSupportedError: deterministic=True requires SQLite 3.8.3 or higher`.
-Лечится одной командой, код уже готов к этому (`config/settings.py`
-сам подхватывает более новую SQLite, если пакет установлен):
+Лечится одной командой:
 
 ```bash
 pip install pysqlite3-binary
 ```
+
+Код уже готов к обоим последствиям этой замены:
+`config/settings.py` сам подхватывает более новую SQLite, если пакет
+установлен, а `config/sqlite_backend.py` обходит то, что `pysqlite3` не
+реализует `getlimit()/setlimit()` (иначе следующим шагом вылезла бы
+`AttributeError: 'pysqlite3.dbapi2.Connection' object has no attribute
+'getlimit'` прямо во время `migrate`).
 
 После установки просто повторите `migrate` — ничего руками
 патчить не нужно.
