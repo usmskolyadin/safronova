@@ -142,7 +142,18 @@ class TeacherAchievement(models.Model):
 
     title = models.CharField("Название", max_length=255)
     description = models.TextField("Описание", blank=True)
-    image = models.ImageField("Изображение (скан грамоты и т.п.)", upload_to="achievements/teacher/")
+    image = models.ImageField(
+        "Изображение (скан грамоты и т.п.)",
+        upload_to="achievements/teacher/",
+        blank=True,
+        null=True,
+    )
+    file = models.FileField(
+        "Файл (полный текст, документ)",
+        upload_to="achievements/teacher/files/",
+        blank=True,
+        null=True,
+    )
     year = models.PositiveIntegerField("Год", blank=True, null=True)
     order = models.PositiveIntegerField("Порядок отображения", default=0)
 

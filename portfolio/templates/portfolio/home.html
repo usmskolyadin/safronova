@@ -97,7 +97,16 @@
       {% for item in teacher_achievements %}
       <div class="card">
         <div class="card-media">
-          <img src="{{ item.image.url }}" alt="{{ item.title }}">
+          {% if item.image %}
+            <img src="{{ item.image.url }}" alt="{{ item.title }}">
+          {% else %}
+            <div class="card-media-fallback">
+              <span class="fallback-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+              </span>
+              <span class="fallback-title">{{ item.title }}</span>
+            </div>
+          {% endif %}
         </div>
         <div class="card-body">
           {% if item.year %}<div class="card-meta"><span class="badge">{{ item.year }}</span></div>{% endif %}
