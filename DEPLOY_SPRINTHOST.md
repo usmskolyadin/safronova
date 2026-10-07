@@ -37,6 +37,7 @@ git push -u origin main
 
 ```bash
 ssh <логин>@<адрес-сервера-из-панели>
+cd ~
 pip install virtualenv --user
 virtualenv --system-site-packages python
 source ~/python/bin/activate
@@ -44,6 +45,13 @@ source ~/python/bin/activate
 
 Окружение лежит в `~/python`. Активировать его нужно заново при каждом
 новом SSH-подключении.
+
+Важно выполнить `cd ~` перед `virtualenv` — на некоторых тарифах SSH-логин
+приземляет не в домашний каталог, а сразу в `~/domains/<ваш-домен>/`, и
+тогда `virtualenv --system-site-packages python` создаст окружение там
+(`~/domains/<ваш-домен>/python`), а не в `~/python`, как ожидают следующие
+шаги и `site.wsgi`. Проверить, где вы оказались после логина, можно
+командой `pwd`.
 
 ## Шаг 4. Склонировать проект и поставить зависимости
 
@@ -87,12 +95,14 @@ Django, поэтому чинится не точечным патчем, а п�
 Создайте файл `~/domains/<ваш-домен>/public_html/site.wsgi`:
 
 ```python
+import glob
 import os
 import sys
 
-activate_this = "/home/<логин>/python/bin/activate_this.py"
-with open(activate_this) as f:
-    exec(f.read(), {"__file__": activate_this})
+for site_packages in glob.glob(
+    "/home/<логин>/python/lib*/python3.*/site-packages"
+):
+    sys.path.insert(0, site_packages)
 
 sys.path.insert(0, "/home/<логин>/domains/<ваш-домен>/myproject")
 
@@ -104,6 +114,34 @@ os.environ["DJANGO_SECRET_KEY"] = "<сгенерированный-секрет�
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
 ```
+
+Раньше здесь использовался `activate_this.py` для активации виртуального
+окружения, но начиная с virtualenv 20.x этот файл больше не создаётся по
+умолчанию — `open(activate_this)` падает с `FileNotFoundError`, и Apache
+отдаёт 500 ещё до старта Django (без единой строчки в логах приложения,
+так как падение происходит до инициализации логгера). Добавление
+`site-packages` виртуального окружения в `sys.path` напрямую даёт тот же
+результат и не зависит от версии virtualenv — благодаря `--system-site-packages`
+на шаге 3 остальные системные пакеты и так видны интерпретатору.
+
+Путь до venv в этом файле прописан абсолютно (`/home/<логин>/...`), а не
+через `os.path.expanduser("~/...")` — процесс Apache/mod_wsgi, который
+исполняет `site.wsgi`, может работать от другого системного пользователя,
+чем аккаунт по SSH, и тогда `~` разворачивается не туда (или не туда, куда
+вы ожидаете), venv не находится, а `from django.core.wsgi import
+get_wsgi_application` падает с `ModuleNotFoundError: No module named
+'django'` — при том что тот же файл, запущенный вручную по SSH
+(`python3 site.wsgi`), отрабатывает без единой ошибки.
+
+Путь собирается через `lib*` (а не просто `lib`), потому что на RHEL-подобных
+системах (например, `/opt/rh/rh-python*`, как у Sprinthost) чистые
+Python-пакеты (Django) ставятся в `lib/python3.X/site-packages`, а пакеты
+с C-расширениями (`pysqlite3-binary`, `Pillow`) — отдельно, в
+`lib64/python3.X/site-packages`. Если добавить в `sys.path` только `lib`,
+Django импортируется нормально, но `pysqlite3-binary` останется
+недоступен — падение будет не на `import django`, а позже, уже внутри
+Django, с `NotSupportedError: deterministic=True requires SQLite 3.8.3 or
+higher`, хотя пакет формально `pip install`-ом уже стоит.
 
 Секретный ключ сгенерируйте (в активном virtualenv):
 

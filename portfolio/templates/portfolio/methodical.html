@@ -38,9 +38,12 @@
               {% if item.grade %}<span class="badge">{{ item.grade }} класс</span>{% endif %}
             </div>
             <h3>{{ item.title }}</h3>
-            {% if item.description %}<p>{{ item.description }}</p>{% endif %}
+            {% if item.description %}<p>{{ item.description }}</p>{% else %}<div class="card-spacer"></div>{% endif %}
             {% if item.file %}
-              <a href="{{ item.file.url }}" class="file-download" target="_blank" rel="noopener">&#128206; Скачать материал</a>
+              <a href="{{ item.file.url }}" class="file-download" download rel="noopener">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+                Скачать материал
+              </a>
             {% endif %}
           </div>
         </div>
