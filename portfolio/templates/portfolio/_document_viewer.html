@@ -1,0 +1,23 @@
+{% load static %}
+<div class="doc-viewer" id="doc-viewer" aria-hidden="true">
+  <div class="doc-viewer__dialog" role="dialog" aria-modal="true" aria-labelledby="doc-viewer-title">
+    <div class="doc-viewer__header">
+      <h3 class="doc-viewer__title" id="doc-viewer-title"></h3>
+      <button type="button" class="doc-viewer__close" aria-label="Закрыть">&times;</button>
+    </div>
+    <div class="doc-viewer__body">
+      <div class="doc-viewer__stage"></div>
+      <div class="doc-viewer__status">Загрузка документа&hellip;</div>
+    </div>
+    <div class="doc-viewer__footer">
+      <button type="button" class="doc-viewer__nav doc-viewer__prev" aria-label="Предыдущая страница">&#8249;</button>
+      <span class="doc-viewer__page-indicator">Страница <b class="doc-viewer__current">1</b> из <b class="doc-viewer__total">1</b></span>
+      <button type="button" class="doc-viewer__nav doc-viewer__next" aria-label="Следующая страница">&#8250;</button>
+      <a class="doc-viewer__download file-download" download rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+        Скачать файл
+      </a>
+    </div>
+  </div>
+</div>
+<script src="{% static 'js/document-viewer.js' %}" defer></script>

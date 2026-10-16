@@ -1299,3 +1299,248 @@ p {
     font-size: 1.9rem;
   }
 }
+
+/* ---------- Document file-type chip (card fallback) ---------- */
+
+.file-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #fff;
+  background: var(--color-primary);
+}
+
+.file-chip.is-pdf {
+  background: #c0392b;
+}
+
+.file-chip.is-doc,
+.file-chip.is-docx {
+  background: #2b579a;
+}
+
+/* ---------- Card actions / preview trigger ---------- */
+
+.card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.card-actions .file-download {
+  margin-top: 0;
+}
+
+.file-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px 18px;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 0.88rem;
+  border: 1px solid var(--color-primary);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.file-preview svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.file-preview:hover {
+  background: var(--color-primary);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---------- Document viewer (flipbook modal) ---------- */
+
+.doc-viewer {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 14, 12, 0.92);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 24px;
+}
+
+.doc-viewer.is-open {
+  display: flex;
+}
+
+.doc-viewer__dialog {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: min(900px, 100%);
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.doc-viewer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.doc-viewer__title {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  color: var(--color-primary-dark);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.doc-viewer__close {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  line-height: 1;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0 4px;
+}
+
+.doc-viewer__close:hover {
+  color: var(--color-primary);
+}
+
+.doc-viewer__body {
+  position: relative;
+  flex: 1;
+  background: var(--color-bg-alt);
+}
+
+.doc-viewer__stage {
+  position: relative;
+  width: 100%;
+  height: min(70vh, 720px);
+  perspective: 2000px;
+  overflow: hidden;
+}
+
+.viewer-page {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+.viewer-page.is-flipping {
+  transition: transform 0.5s cubic-bezier(0.4, 0.1, 0.2, 1);
+  z-index: 2;
+}
+
+.viewer-page-inner {
+  background: #fff;
+  box-shadow: var(--shadow-md);
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.viewer-page-inner canvas {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.doc-viewer__status {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+
+.doc-viewer__footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 16px 22px;
+  border-top: 1px solid var(--color-border);
+}
+
+.doc-viewer__nav {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-primary);
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  flex-shrink: 0;
+}
+
+.doc-viewer__nav:hover:not(:disabled) {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+.doc-viewer__nav:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.doc-viewer__page-indicator {
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.doc-viewer__download {
+  width: auto;
+  padding: 10px 20px;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .doc-viewer {
+    padding: 0;
+  }
+  .doc-viewer__dialog {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+  }
+  .doc-viewer__stage {
+    height: auto;
+    flex: 1;
+  }
+}

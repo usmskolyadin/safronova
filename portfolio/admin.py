@@ -78,8 +78,26 @@ class PortfolioPageAdmin(SingletonAdmin):
     fields = ("title", "intro")
 
 
+FILE_ICON_COLORS = {
+    "pdf": "#c0392b",
+    "doc": "#2b579a",
+    "docx": "#2b579a",
+}
+
+
 class ImagePreviewMixin:
     def image_preview(self, obj):
+        file_field = getattr(obj, "file", None)
+        if file_field:
+            ext = file_field.name.rsplit(".", 1)[-1].lower() if "." in file_field.name else ""
+            color = FILE_ICON_COLORS.get(ext, "#8c3a3a")
+            return format_html(
+                '<span style="display:inline-block;padding:4px 10px;border-radius:6px;'
+                'background:{}; color:#fff; font-weight:600; font-size:11px;'
+                'letter-spacing:.03em;">{}</span>',
+                color,
+                ext.upper() or "ФАЙЛ",
+            )
         image = getattr(obj, "image", None) or getattr(obj, "cover_image", None) or getattr(obj, "hero_photo", None)
         if image:
             return format_html('<img src="{}" style="height:60px;border-radius:6px;" />', image.url)
@@ -94,6 +112,16 @@ class TeacherAchievementAdmin(ImagePreviewMixin, admin.ModelAdmin):
     list_editable = ("order",)
     search_fields = ("title", "description")
     list_filter = ("year",)
+    fieldsets = (
+        (None, {"fields": ("title", "file", "year", "order")}),
+        (
+            "Дополнительно",
+            {
+                "classes": ("collapse",),
+                "fields": ("description", "image"),
+            },
+        ),
+    )
 
 
 @admin.register(StudentAchievement)
@@ -102,6 +130,16 @@ class StudentAchievementAdmin(ImagePreviewMixin, admin.ModelAdmin):
     list_editable = ("order",)
     search_fields = ("title", "student_name", "description")
     list_filter = ("year",)
+    fieldsets = (
+        (None, {"fields": ("title", "student_name", "file", "year", "order")}),
+        (
+            "Дополнительно",
+            {
+                "classes": ("collapse",),
+                "fields": ("description", "image"),
+            },
+        ),
+    )
 
 
 @admin.register(MethodicalMaterial)
@@ -110,6 +148,16 @@ class MethodicalMaterialAdmin(ImagePreviewMixin, admin.ModelAdmin):
     list_editable = ("order",)
     list_filter = ("category", "grade")
     search_fields = ("title", "description")
+    fieldsets = (
+        (None, {"fields": ("title", "category", "grade", "file", "order")}),
+        (
+            "Дополнительно",
+            {
+                "classes": ("collapse",),
+                "fields": ("description", "cover_image"),
+            },
+        ),
+    )
 
 
 @admin.register(GalleryPhoto)

@@ -1,4 +1,5 @@
 {% extends "portfolio/base.html" %}
+{% load portfolio_extras %}
 
 {% block title %}Методическая копилка — {{ site_settings.site_name }}{% endblock %}
 
@@ -29,7 +30,13 @@
             {% if item.cover_image %}
               <img src="{{ item.cover_image.url }}" alt="{{ item.title }}">
             {% else %}
-              <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.4rem;color:var(--color-primary-light);">&#128218;</div>
+              <div class="card-media-fallback">
+                <span class="fallback-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+                </span>
+                <span class="fallback-title">{{ item.title }}</span>
+                {% if item.file %}<span class="file-chip is-{{ item.file|file_ext }}">{{ item.file|file_ext|upper }}</span>{% endif %}
+              </div>
             {% endif %}
           </div>
           <div class="card-body">
@@ -40,10 +47,18 @@
             <h3>{{ item.title }}</h3>
             {% if item.description %}<p>{{ item.description }}</p>{% else %}<div class="card-spacer"></div>{% endif %}
             {% if item.file %}
-              <a href="{{ item.file.url }}" class="file-download" download rel="noopener">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
-                Скачать материал
-              </a>
+              <div class="card-actions">
+                {% if item.file|is_previewable %}
+                  <button type="button" class="file-preview" data-doc-url="{{ item.file.url }}" data-doc-title="{{ item.title }}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                    Просмотреть
+                  </button>
+                {% endif %}
+                <a href="{{ item.file.url }}" class="file-download" download rel="noopener">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+                  Скачать материал
+                </a>
+              </div>
             {% endif %}
           </div>
         </div>
@@ -59,3 +74,5 @@
   </div>
 </section>
 {% endblock %}
+
+{% block extra_js %}{% include "portfolio/_document_viewer.html" %}{% endblock %}

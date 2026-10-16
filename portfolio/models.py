@@ -142,15 +142,20 @@ class TeacherAchievement(models.Model):
 
     title = models.CharField("Название", max_length=255)
     description = models.TextField("Описание", blank=True)
-    image = models.ImageField(
-        "Изображение (скан грамоты и т.п.)",
-        upload_to="achievements/teacher/",
+    file = models.FileField(
+        "Документ (PDF или DOCX)",
+        help_text="Загрузите скан или файл грамоты — на сайте он откроется "
+        "как книжка с перелистыванием страниц, а посетители смогут его скачать. "
+        "Отдельное изображение заполнять не нужно.",
+        upload_to="achievements/teacher/files/",
         blank=True,
         null=True,
     )
-    file = models.FileField(
-        "Файл (полный текст, документ)",
-        upload_to="achievements/teacher/files/",
+    image = models.ImageField(
+        "Изображение (если нет PDF/DOCX)",
+        help_text="Заполняйте только если нет документа выше — например, "
+        "есть просто фото грамоты без исходного файла.",
+        upload_to="achievements/teacher/",
         blank=True,
         null=True,
     )
@@ -165,6 +170,11 @@ class TeacherAchievement(models.Model):
     def __str__(self):
         return self.title
 
+    def clean(self):
+        super().clean()
+        if not self.file and not self.image:
+            raise ValidationError("Загрузите документ (PDF/DOCX) или хотя бы изображение.")
+
 
 class StudentAchievement(models.Model):
     """Достижения учащихся."""
@@ -172,7 +182,23 @@ class StudentAchievement(models.Model):
     title = models.CharField("Название", max_length=255)
     student_name = models.CharField("Имя учащегося", max_length=255, blank=True)
     description = models.TextField("Описание", blank=True)
-    image = models.ImageField("Изображение (скан грамоты и т.п.)", upload_to="achievements/students/")
+    file = models.FileField(
+        "Документ (PDF или DOCX)",
+        help_text="Загрузите скан или файл грамоты — на сайте он откроется "
+        "как книжка с перелистыванием страниц, а посетители смогут его скачать. "
+        "Отдельное изображение заполнять не нужно.",
+        upload_to="achievements/students/files/",
+        blank=True,
+        null=True,
+    )
+    image = models.ImageField(
+        "Изображение (если нет PDF/DOCX)",
+        help_text="Заполняйте только если нет документа выше — например, "
+        "есть просто фото грамоты без исходного файла.",
+        upload_to="achievements/students/",
+        blank=True,
+        null=True,
+    )
     year = models.PositiveIntegerField("Год", blank=True, null=True)
     order = models.PositiveIntegerField("Порядок отображения", default=0)
 
@@ -183,6 +209,11 @@ class StudentAchievement(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.student_name})" if self.student_name else self.title
+
+    def clean(self):
+        super().clean()
+        if not self.file and not self.image:
+            raise ValidationError("Загрузите документ (PDF/DOCX) или хотя бы изображение.")
 
 
 class MethodicalMaterial(models.Model):
@@ -203,10 +234,20 @@ class MethodicalMaterial(models.Model):
     description = models.TextField("Описание", blank=True)
     grade = models.CharField("Класс / параллель", max_length=50, blank=True)
     file = models.FileField(
-        "Файл материала", upload_to="methodical/files/", blank=True, null=True
+        "Документ (PDF или DOCX)",
+        help_text="Загрузите файл материала — на сайте он откроется как "
+        "книжка с перелистыванием страниц, а посетители смогут его скачать. "
+        "Обложку отдельно заполнять не нужно.",
+        upload_to="methodical/files/",
+        blank=True,
+        null=True,
     )
     cover_image = models.ImageField(
-        "Изображение-обложка", upload_to="methodical/covers/", blank=True, null=True
+        "Обложка (если нет PDF/DOCX)",
+        help_text="Заполняйте только если нет документа выше.",
+        upload_to="methodical/covers/",
+        blank=True,
+        null=True,
     )
     date_added = models.DateField("Дата добавления", auto_now_add=True)
     order = models.PositiveIntegerField("Порядок отображения", default=0)
@@ -218,6 +259,11 @@ class MethodicalMaterial(models.Model):
 
     def __str__(self):
         return self.title
+
+    def clean(self):
+        super().clean()
+        if not self.file and not self.cover_image:
+            raise ValidationError("Загрузите документ (PDF/DOCX) или хотя бы обложку.")
 
 
 class GalleryPhoto(models.Model):

@@ -1,5 +1,6 @@
 {% extends "portfolio/base.html" %}
 {% load static %}
+{% load portfolio_extras %}
 
 {% block title %}{{ site_settings.site_name }} — {{ site_settings.teacher_full_name }}{% endblock %}
 
@@ -119,10 +120,18 @@
           <h3>{{ item.title }}</h3>
           {% if item.description %}<p>{{ item.description|truncatewords:18 }}</p>{% else %}<div class="card-spacer"></div>{% endif %}
           {% if item.file %}
-            <a href="{{ item.file.url }}" class="file-download" download rel="noopener">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
-              Скачать документ
-            </a>
+            <div class="card-actions">
+              {% if item.file|is_previewable %}
+                <button type="button" class="file-preview" data-doc-url="{{ item.file.url }}" data-doc-title="{{ item.title }}">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                  Просмотреть
+                </button>
+              {% endif %}
+              <a href="{{ item.file.url }}" class="file-download" download rel="noopener">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+                Скачать документ
+              </a>
+            </div>
           {% elif item.image %}
             <a href="{{ item.image.url }}" class="file-download" download rel="noopener">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
@@ -163,3 +172,5 @@
 {% endif %}
 
 {% endblock %}
+
+{% block extra_js %}{% include "portfolio/_document_viewer.html" %}{% endblock %}
